@@ -22,6 +22,9 @@
 
 import logging, os
 from urllib.parse import urlencode, urlparse, urlunparse
+
+from pycentral.exception import PyCentralException
+
 try:
     import colorlog  # type: ignore
     COLOR = True
@@ -57,11 +60,13 @@ def parseInputArgs(central_info):
     :rtype: dict
     """
     if not central_info:
-        exit("Error: Invalid Input!")
+        #exit("Error: Invalid Input!")
+        raise PyCentralException("Error: Invalid Input!")
 
     # Mandatory input arg
     if "base_url" not in central_info:
-        exit("Error: Provide base_url for API Gateway!")
+        #exit("Error: Provide base_url for API Gateway!")
+        raise PyCentralException("Error: Provide base_url for API Gateway!")
 
     default_dict = dict(C_DEFAULT_ARGS)
     for key in default_dict.keys():

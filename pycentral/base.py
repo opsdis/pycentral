@@ -26,6 +26,7 @@ import errno
 from pycentral.base_utils import tokenLocalStoreUtil
 from pycentral.base_utils import C_DEFAULT_ARGS, get_url
 from pycentral.base_utils import console_logger, parseInputArgs
+from pycentral.exception import PyCentralException
 
 SUPPORTED_METHODS = ("POST", "PATCH", "DELETE", "GET", "PUT")
 
@@ -94,7 +95,8 @@ class ArubaCentralBase:
             self.central_info["token"] = self.getToken()
 
         if not self.central_info["token"]:
-            sys.exit("exiting.. unable to get API access token!")
+            #sys.exit("exiting.. unable to get API access token!")
+            raise PyCentralException("Unable to get API access token!")
 
     def oauthLogin(self):
         """This function is Step1 of the OAUTH2.0 mechanism to generate access token. Login to Aruba Central
@@ -132,10 +134,12 @@ class ArubaCentralBase:
                                 "msg": resp.text
                             }
                 self.logger.error("OAUTH2.0 Step1 login API call failed with response " + str(resp_msg))
-                sys.exit(1)
+                #sys.exit(1)
+                raise PyCentralException("OAUTH2.0 Step1 login API call failed with response " + str(resp_msg))
         except Exception as e:
             self.logger.error("OAUTH2.0 Step1 failed with error " + str(e))
-            sys.exit(1)
+            #sys.exit(1)
+            raise PyCentralException("OAUTH2.0 Step1 failed with error " + str(e))
 
     def oauthCode(self, csrf_token, session_token):
         """This function is Step2 of the OAUTH2.0 mechanism to get auth code using CSRF token and session key.
@@ -180,10 +184,12 @@ class ArubaCentralBase:
                                 "msg": resp.text
                             }
                 self.logger.error("OAUTH2.0 Step2 obtaining Auth code API call failed with response " + str(resp_msg))
-                sys.exit(1)
+                #sys.exit(1)
+                raise PyCentralException("OAUTH2.0 Step2 obtaining Auth code API call failed with response " + str(resp_msg))
         except Exception as e:
             self.logger.error("Central Login Step2 failed with error " + str(e))
-            sys.exit(1)
+            #sys.exit(1)
+            raise PyCentralException("Central Login Step2 failed with error " + str(e))
 
     def oauthAccessToken(self, auth_code):
         """This function is Step3 of the OAUTH2.0 mechanism to generate API access token.
@@ -220,10 +226,12 @@ class ArubaCentralBase:
                                 "msg": resp.text
                             }
                 self.logger.error("OAUTH2.0 Step3 creating access token API call failed with response " + str(resp_msg))
-                sys.exit(1)
+                #sys.exit(1)
+                raise PyCentralException("OAUTH2.0 Step3 creating access token API call failed with response " + str(resp_msg))
         except Exception as e:
             self.logger.error("Central Login Step3 failed with error " + str(e))
-            sys.exit(1)
+            #sys.exit(1)
+            raise PyCentralException("Central Login Step3 failed with error " + str(e))
 
     def validateOauthParams(self):
         """This function validates if all required parameters are available to obtain access_token via OAUTH2.0 mechanism
@@ -413,7 +421,8 @@ class ArubaCentralBase:
             self.storeToken(token)
         else:
             self.logger.error("Failed to get API access token")
-            sys.exit("exiting...")
+            #sys.exit("exiting...")
+            raise PyCentralException("Failed to get API access token")
 
     def getToken(self):
         """This function attempts to obtain token from storage/cache otherwise creates new access token.
@@ -544,5 +553,6 @@ class ArubaCentralBase:
                         pass
                     return result
             except Exception as err:
-                self.logger.error(err)
-                exit("exiting...")
+                self.logger.error("Command failed with " + str(err))
+                #exit("exiting...")
+                raise PyCentralException("Command failed with " + str(err))
