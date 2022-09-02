@@ -6,11 +6,11 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pycentral",
-    version="0.0.3",
+    name="opsdis-pycentral",
+    version="0.0.4",
     author="aruba-automation",
     author_email="aruba-automation@hpe.com",
-    description="Aruba Central Python Package",
+    description="Aruba Central Python Package, with changes by opsdis waiting for pull #12 to be merge",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/aruba/pycentral",
